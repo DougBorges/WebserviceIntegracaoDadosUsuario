@@ -29,11 +29,11 @@ namespace IntegracaoDadosUsuario.WS.Controllers {
                 GerarErroSeNaoInformado(usuario.Login, "login");
                 GerarErroSeNaoInformado(usuario.DataNascimento, "data de nascimento");
 
-                if (usuarios.ComLogin(usuario.Login)?.Id != null) {
+                if (usuarios.ExisteComLogin(usuario.Login)) {
                     throw new Exception("Já existe um usuário cadastrado com esse login");
                 }
 
-                if (usuarios.ComCPF(usuario.CPF)?.Id != null) {
+                if (usuarios.ExisteComCPF(usuario.CPF)) {
                     throw new Exception("Já existe um usuário cadastrado com esse CPF");
                 }
 
@@ -205,8 +205,8 @@ namespace IntegracaoDadosUsuario.WS.Controllers {
             return new ResultadoValidarToken { TokenValido = tokenValido };
         }
 
-        private void GerarErroSeNaoInformado(Object valor, String nomeParametro) {
-            if (valor.Equals(default(Object))) {
+        protected void GerarErroSeNaoInformado<T>(T valor, String nomeParametro) {
+            if (valor == null || valor.Equals(default(T)) || valor is String && String.IsNullOrWhiteSpace(valor as String)) {
                 throw new Exception($"Campo \"{nomeParametro}\" não informado");
             }
         }

@@ -5,6 +5,34 @@ using IntegracaoDadosUsuario.Infraestrutura.Interfaces;
 
 namespace IntegracaoDadosUsuario.Infraestrutura.Repositorios {
     public class UsuarioRepository : RepositoryBase, IUsuarioRepository {
+        public Boolean ExisteComLogin(String login) {
+            using (var conn = GetConnection()) {
+                var query = " Select 1 " +
+                            "   From Usuario " +
+                            "  Where Nm_Login = :Login ";
+
+                var parametros = new { Login = login };
+                var resultado = conn.ExecuteScalar<Boolean>(query, parametros);
+
+                conn.Close();
+                return resultado;
+            }
+        }
+
+        public Boolean ExisteComCPF(String cpf) {
+            using (var conn = GetConnection()) {
+                var query = " Select 1 " +
+                            "   From Usuario " +
+                            "  Where Nm_Cpf = :CPF ";
+
+                var parametros = new { CPF = cpf };
+                var resultado = conn.ExecuteScalar<Boolean>(query, parametros);
+
+                conn.Close();
+                return resultado;
+            }
+        }
+
         public Usuario ComLogin(String login) {
             using (var conn = GetConnection()) {
                 var query = " Select Cd_Usuario Id, " +
@@ -16,24 +44,6 @@ namespace IntegracaoDadosUsuario.Infraestrutura.Repositorios {
                             "  Where Nm_Login = :Login ";
 
                 var parametros = new { Login = login };
-                var resultado = conn.QueryFirstOrDefault<Usuario>(query, parametros);
-
-                conn.Close();
-                return resultado;
-            }
-        }
-
-        public Usuario ComCPF(String cpf) {
-            using (var conn = GetConnection()) {
-                var query = " Select Cd_Usuario Id, " +
-                            "        Nm_Login Login, " +
-                            "        Nm_Cpf CPF, " +
-                            "        Dt_Nascimento DataNascimento, " +
-                            "        Ds_Senha Senha " +
-                            "   From Usuario " +
-                            "  Where Nm_Cpf = :CPF ";
-
-                var parametros = new { CPF = cpf };
                 var resultado = conn.QueryFirstOrDefault<Usuario>(query, parametros);
 
                 conn.Close();
